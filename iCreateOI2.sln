@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Program", "iCreateOI2\Program.csproj", "{82F1A805-3FF5-4391-B05E-C95C8DA9CE32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iCreateOI2", "Roomba\iCreateOI2.csproj", "{B8D2C615-424F-4F43-B5EE-F755409CDC3D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82F1A805-3FF5-4391-B05E-C95C8DA9CE32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82F1A805-3FF5-4391-B05E-C95C8DA9CE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F1A805-3FF5-4391-B05E-C95C8DA9CE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82F1A805-3FF5-4391-B05E-C95C8DA9CE32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D2C615-424F-4F43-B5EE-F755409CDC3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D2C615-424F-4F43-B5EE-F755409CDC3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D2C615-424F-4F43-B5EE-F755409CDC3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D2C615-424F-4F43-B5EE-F755409CDC3D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7E69FD4-9768-4BEF-9D8E-202F263BC87D}
+	EndGlobalSection
+EndGlobal
