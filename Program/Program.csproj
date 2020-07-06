@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Roomba\iCreateOI2.csproj" />
+    <ProjectReference Include="..\iCreateOI2\iCreateOI2.csproj" />
   </ItemGroup>
 
 </Project>

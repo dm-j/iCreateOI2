@@ -4,7 +4,7 @@ using System;
 
 namespace iCreateOI2.Modes
 {
-    internal class Passive : Mode
+    internal class Passive : OpenInterfaceMode
     {
         internal Passive(Roomba robot)
             : base(robot)
@@ -12,46 +12,49 @@ namespace iCreateOI2.Modes
             Console.WriteLine("OI Mode: Passive");
         }
 
-        public override IMode Start() => 
+        public override IInteractionMode Start() =>
             this;
 
-        public override IMode ModeSafe()
+        public override IInteractionMode ModeSafe()
         {
             robot.Send(Command.Safe());
             return new Safe(robot);
         }
 
-        public override IMode ModeFull()
+        public override IInteractionMode ModeFull()
         {
             robot.Send(Command.Full());
             return new Full(robot);
         }
 
-        public override IMode ModePassive() => 
+        public override IInteractionMode ModePassive() =>
             this;
 
-        public override IMode SeekDock()
+        public override IInteractionMode SeekDock()
         {
             robot.Send(Command.SeekDock());
             return this;
         }
 
-        public override IMode ModeOff()
+        public override IInteractionMode ModeOff()
         {
             robot.Send(Command.Reset());
             return new Off(robot);
         }
 
-        public override IMode Sing(Song song) => 
+        public override IInteractionMode Sing(Song song) =>
             ModeSafe().Sing(song);
 
-        public override IMode Sing(Melody melody) => 
+        public override IInteractionMode Sing(Melody melody) => 
             Sing(Song.Define(SongNumber.Immediate, melody)).Play(SongNumber.Immediate);
 
-        public override IMode Play(SongNumber number) => 
+        public override IInteractionMode Play(SongNumber number) =>
             ModeSafe().Play(number);
 
-        public override IMode Drive(Drive drive) => 
+        public override IInteractionMode Drive(Drive drive) =>
             ModeSafe().Drive(drive);
+
+        public override IInteractionMode Halt() =>
+            ModeSafe().Halt();
     }
 }

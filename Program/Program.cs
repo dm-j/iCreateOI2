@@ -2,10 +2,8 @@
 using iCreateOI2.Communications;
 using System;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 
-namespace iCreateOI2
+namespace Program
 {
     class Program
     {
@@ -13,13 +11,13 @@ namespace iCreateOI2
         {
             Console.WriteLine("Connecting to Fenton Chassis");
             Console.WriteLine("Ports available:");
-            Console.WriteLine(SerialPort.GetPortNames().Aggregate(new StringBuilder(), (acc, next) => acc.AppendLine(next)).ToString());
+            Console.WriteLine(string.Join(" ", SerialPort.GetPortNames()));
             Console.Write("Choose port: ");
 
             string portName = Console.ReadLine();
             portName = string.IsNullOrWhiteSpace(portName.Trim())
                             ? "COM5"
-                            : portName;
+                            : portName.ToUpper().Trim();
 
             SerialPort serialPort = new SerialPort
             {
@@ -38,8 +36,6 @@ namespace iCreateOI2
             roomba.Song(Song.Define(SongNumber.Song1, Melody.Define((Note.C4, 64), (Note.D4, 32), (Note.E4, 16))));
             
             roomba.Sing(SongNumber.Song1);
-
-            roomba.
 
             Console.ReadLine();
 

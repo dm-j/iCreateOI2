@@ -4,38 +4,41 @@ using System.Reactive.Linq;
 
 namespace iCreateOI2.Sensors
 {
-    public class Sensors : ISensorParser
+    /// <summary>
+    /// Sensor packet data received. If it passes checksum, interpret the data and fire the 
+    /// </summary>
+    public class Checking : ISensorParseMode
     {
         private byte[] data;
 
-        private Sensors() { }
+        private Checking() { }
 
-        public ISensorParser Parse(byte b)
+        public ISensorParseMode Parse(byte b)
         {
             if (Checksum(b))
             {
                 // Send data here
-                return ReadyToRead.Instance;
+                return Ready.Mode;
             }
             else
             {
                 Console.WriteLine("Sensor read error");
-                return SensorParsingError.Instance;
+                return Aligning.Mode;
             }
         }
 
         private bool Checksum(byte b) =>
             BitConverter.GetBytes(data.Aggregate(0, (acc, next) => acc + next) + b)[0] == 0;
 
-        public ISensorParser SetBytes(byte[] bytes)
+        public ISensorParseMode SetBytes(byte[] bytes)
         {
             data = bytes;
             return this;
         }
 
-        internal static Sensors Instance { get; } = new Sensors();
+        internal static Checking Mode { get; } = new Checking();
 
-        internal static ISensorParser Package(byte[] bytes) => Instance.SetBytes(bytes);
+        internal static ISensorParseMode Package(byte[] bytes) => Mode.SetBytes(bytes);
 
         private class SensorParser
         {

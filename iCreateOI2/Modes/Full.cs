@@ -4,7 +4,7 @@ using System;
 
 namespace iCreateOI2.Modes
 {
-    internal class Full : Mode
+    internal class Full : OpenInterfaceMode
     {
         internal Full(Roomba robot) 
             : base(robot)
@@ -12,55 +12,58 @@ namespace iCreateOI2.Modes
             Console.WriteLine("OI Mode: Full");
         }
 
-        public override IMode Drive(Drive drive)
+        public override IInteractionMode Drive(Drive drive)
         {
             robot.Send(Command.Drive(drive));
             return this;
         }
 
-        public override IMode ModeFull() => 
+        public override IInteractionMode ModeFull() => 
             this;
 
-        public override IMode Sing(Song song)
+        public override IInteractionMode Sing(Song song)
         {
             robot.Send(Command.Song(song));
             return this;
         }
 
-        public override IMode Play(SongNumber number)
+        public override IInteractionMode Play(SongNumber number)
         {
             robot.Send(Command.Play(number));
             return this;
         }
 
-        public override IMode Sing(Melody melody) => 
+        public override IInteractionMode Sing(Melody melody) => 
             Sing(Song.Define(SongNumber.Immediate, melody)).Play(SongNumber.Immediate);
 
-        public override IMode ModeOff()
+        public override IInteractionMode ModeOff()
         {
             robot.Send(Command.Reset());
             return new Off(robot);
         }
 
-        public override IMode ModePassive()
+        public override IInteractionMode ModePassive()
         {
             robot.Send(Command.Passive());
             return new Passive(robot);
         }
 
-        public override IMode ModeSafe()
+        public override IInteractionMode ModeSafe()
         {
             robot.Send(Command.Safe());
             return new Safe(robot);
         }
 
-        public override IMode SeekDock()
+        public override IInteractionMode SeekDock()
         {
             robot.Send(Command.SeekDock());
             return new Passive(robot);
         }
 
-        public override IMode Start() =>
+        public override IInteractionMode Start() =>
             ModePassive();
+
+        public override IInteractionMode Halt() =>
+            Drive(Commands.Drive.Halt);
     }
 }
