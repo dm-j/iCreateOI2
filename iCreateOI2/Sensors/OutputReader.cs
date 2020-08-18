@@ -16,7 +16,7 @@ namespace iCreateOI2.Sensors
         internal readonly ReadingLength ReadingLength;
         internal readonly ReadingPayload ReadingPayload;
         internal readonly ReadingComplete ReadingComplete;
-        private readonly Dictionary<SensorPacket, Subject<byte[]>> Parsers;
+        internal readonly Dictionary<SensorPacket, Subject<byte[]>> Parsers;
 
         internal OutputReader(IObservable<byte> outputFromRoomba)
         {
@@ -104,11 +104,11 @@ namespace iCreateOI2.Sensors
         public IObservable<float> ProximityRight { get; }
 
 
-        private Func<byte[], int> SingleSigned = data => (sbyte)data[0];
-        private Func<byte[], int> SingleUnsigned = data => data[0];
-        private Func<byte[], int> HighLowSigned = data => BitConverter.ToInt16(data, 0);
-        private Func<byte[], int> HighLowUnsigned = data => 256 * data[0] + data[1];
-        private Func<byte[], Buttons, bool> ParseButton = (data, button) => (data[0] & (int)button) > 0;
-        private Func<int, float> SmoothProximity = data => data / 4095f;
+        private readonly Func<byte[], int> SingleSigned = data => (sbyte)data[0];
+        private readonly Func<byte[], int> SingleUnsigned = data => data[0];
+        private readonly Func<byte[], int> HighLowSigned = data => BitConverter.ToInt16(data, 0);
+        private readonly Func<byte[], int> HighLowUnsigned = data => 256 * data[0] + data[1];
+        private readonly Func<byte[], Buttons, bool> ParseButton = (data, button) => (data[0] & (int)button) > 0;
+        private readonly Func<int, float> SmoothProximity = data => data / 4095f;
     }
 }
