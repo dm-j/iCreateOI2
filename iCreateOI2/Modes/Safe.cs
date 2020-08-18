@@ -4,7 +4,7 @@ using System;
 
 namespace iCreateOI2.Modes
 {
-    internal class Safe : Mode
+    internal class Safe : OpenInterfaceMode
     {
         internal Safe(Roomba robot)
             : base(robot)

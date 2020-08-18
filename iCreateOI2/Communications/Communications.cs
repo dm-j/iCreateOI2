@@ -9,9 +9,9 @@ using System.Text;
 
 namespace iCreateOI2.Communications
 {
-    internal class Adaptor
+    internal class Communications
     {
-        internal Adaptor(SerialPort port)
+        internal Communications(SerialPort port)
         {
             Subject<byte[]> serialPortInput = new Subject<byte[]>();
             Input = serialPortInput.AsObserver();

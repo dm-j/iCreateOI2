@@ -1,44 +1,47 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text;
 
 namespace iCreateOI2.Sensors
 {
     /// <summary>
-    /// Sensor packet data received. If it passes checksum, interpret the data and fire the 
+    /// Sensor packet data received. If it passes checksum, interpret the data and fire the sensor parser
     /// </summary>
-    public class Checking : ISensorParseMode
+    public class ReadingComplete : IReadOutput
     {
+        private readonly OutputReader output;
         private byte[] data;
+        private int checksum;
 
-        private Checking() { }
-
-        public ISensorParseMode Parse(byte b)
+        internal ReadingComplete(OutputReader output)
         {
-            if (Checksum(b))
+            this.output = output;
+        }
+
+        public IReadOutput Read(byte b)
+        {
+            checksum = Checksum(b);
+            if (checksum == 0)
             {
-                // Send data here
-                return Ready.Mode;
+                return output.AwaitingStart;
             }
             else
             {
-                Console.WriteLine("Sensor read error");
-                return Aligning.Mode;
+                Console.WriteLine($"Sensor stream: [ 019, {data.Length:000}, {data.Aggregate(new StringBuilder(), (acc, next) => acc.Append($"{next:000}, "))}{b:000} ]");
+                Console.WriteLine($"Sensor read error. Expected checksum [000], received [{checksum:000}]");
+                return output.Aligning.Skip();
             }
         }
 
-        private bool Checksum(byte b) =>
-            BitConverter.GetBytes(data.Aggregate(0, (acc, next) => acc + next) + b)[0] == 0;
+        private int Checksum(byte b) =>
+            BitConverter.GetBytes(data.Aggregate(0, (acc, next) => acc + next) + b)[0];
 
-        public ISensorParseMode SetBytes(byte[] bytes)
+        public ReadingComplete Package(byte[] data)
         {
-            data = bytes;
+            this.data = data;
             return this;
         }
-
-        internal static Checking Mode { get; } = new Checking();
-
-        internal static ISensorParseMode Package(byte[] bytes) => Mode.SetBytes(bytes);
 
         private class SensorParser
         {

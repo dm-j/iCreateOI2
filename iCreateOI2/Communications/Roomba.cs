@@ -1,7 +1,6 @@
 ﻿using iCreateOI2.Commands;
 using iCreateOI2.Modes;
 using iCreateOI2.Sensors;
-using System;
 using System.IO.Ports;
 using System.Linq;
 using System.Reactive.Linq;
@@ -10,17 +9,15 @@ namespace iCreateOI2.Communications
 {
     public class Roomba
     {
-        private readonly Adaptor adaptor;
+        private readonly Communications adaptor;
         private IInteractionMode InteractionMode;
-        private ISensorParseMode SensorParser = Aligning.Mode;
-
-        private readonly Checking Sensors = Checking.Mode;
+        private readonly OutputReader Output;
 
         public Roomba(SerialPort port)
         {
-            adaptor = new Adaptor(port);
-            adaptor.Output.Subscribe(Parse);
-            Execute(Mode.Init(this));
+            adaptor = new Communications(port);
+            Output = new OutputReader(adaptor.Output);
+            Execute(OpenInterfaceMode.Init(this));
         }
 
         public void Drive(Drive drive) => 
@@ -65,24 +62,21 @@ namespace iCreateOI2.Communications
         private void Execute(IInteractionMode command) =>
             InteractionMode = command;
 
-        private void Parse(byte b) =>
-            SensorParser = SensorParser.Parse(b);
-
         private void ForceMode(byte mode)
         {
             switch (mode)
             {
                 case (byte)Mode.Off:
-                    ModeOff();
+                    InteractionMode = new Off(this);
                     return;
                 case (byte)Mode.Passive:
-                    ModePassive();
+                    InteractionMode = new Passive(this);
                     return;
                 case (byte)Mode.Safe:
-                    ModeSafe();
+                    InteractionMode = new Safe(this);
                     return;
                 case (byte)Mode.Full:
-                    ModeFull();
+                    InteractionMode = new Full(this);
                     return;
             }
         }
