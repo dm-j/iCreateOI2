@@ -75,7 +75,6 @@ namespace iCreateOI2.Commands
         private static readonly Command _Passive  = new Command(OpCode.Start);
         private static readonly Command _Halt     = new Command(OpCode.Drive, Commands.Drive.Halt);
         private static readonly Command _Reset    = new Command(OpCode.Reset);
-        private static readonly Command _Off      = new Command(OpCode.Reset);
         private static readonly Command _Safe     = new Command(OpCode.Safe);
         private static readonly Command _Full     = new Command(OpCode.Full);
         private static readonly Command _SeekDock = new Command(OpCode.SeekDock);

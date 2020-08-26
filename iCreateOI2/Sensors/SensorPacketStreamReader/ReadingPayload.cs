@@ -22,7 +22,7 @@
             return this;
         }
 
-        public ReadingPayload SetLength(int length)
+        internal ReadingPayload SetLength(int length)
         {
             index = 0;
             bytes = new byte[length];

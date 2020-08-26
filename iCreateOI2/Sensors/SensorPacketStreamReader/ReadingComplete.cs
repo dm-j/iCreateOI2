@@ -38,27 +38,10 @@ namespace iCreateOI2.Sensors
         private int Checksum(byte b) =>
             BitConverter.GetBytes(data.Aggregate(0, (acc, next) => acc + next) + b)[0];
 
-        public ReadingComplete Package(byte[] data)
+        internal ReadingComplete Package(byte[] data)
         {
             this.data = data;
             return this;
-        }
-
-        private class SensorParser
-        {
-            internal readonly Func<byte[], int> Parse;
-            internal readonly int Length;
-
-            internal SensorParser(Func<byte[], int> parse, int length)
-            {
-                Parse = parse;
-                Length = length;
-            }
-
-            internal static SensorParser SingleSigned { get; } = new SensorParser(data => (sbyte)data[0], 1);
-            internal static SensorParser SingleUnsigned { get; } = new SensorParser(data => data[0], 1);
-            internal static SensorParser HighLowSigned { get; } = new SensorParser(data => BitConverter.ToInt16(data, 0), 2);
-            internal static SensorParser HighLowUnsigned { get; } = new SensorParser(data => 256 * data[0] + data[1], 2);
         }
     }
 }

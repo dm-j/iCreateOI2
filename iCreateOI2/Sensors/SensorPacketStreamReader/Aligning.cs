@@ -17,7 +17,7 @@ namespace iCreateOI2.Sensors
             this.output = output;
         }
 
-        public Aligning Skip()
+        internal Aligning Skip()
         {
             skip = random.Next(1, 3);
             return this;
