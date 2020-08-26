@@ -47,5 +47,9 @@ namespace iCreateOI2.Modes
 
         public override IInteractionMode Halt() =>
             this;
+
+        public override IInteractionMode Stream() =>
+            Start().Stream();
+
     }
 }

@@ -5,14 +5,14 @@ namespace iCreateOI2.Sensors
     /// <summary>
     /// Try to align sensor reader with the stream
     /// </summary>
-    internal class Aligning : IReadOutput
+    internal class Aligning : IReadSensorPacketStreamData
     {
         private static readonly Random random = new Random();
 
-        private readonly OutputReader output;
+        private readonly SensorStream output;
         private int skip = 1;
 
-        internal Aligning(OutputReader output)
+        internal Aligning(SensorStream output)
         {
             this.output = output;
         }
@@ -23,7 +23,7 @@ namespace iCreateOI2.Sensors
             return this;
         }
 
-        public IReadOutput Read(byte b)
+        public IReadSensorPacketStreamData Output(byte b)
         {
             if (b == AwaitingStart.START_BYTE && --skip <= 0)
                 return output.AwaitingStart;

@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace iCreateOI2.Commands
 {
-    public interface IDataBytes
+    internal interface IDataBytes
     {
         public ImmutableArray<byte> Data { get; }
     }

@@ -19,19 +19,9 @@ namespace Program
                             ? "COM5"
                             : portName.ToUpper().Trim();
 
-            SerialPort serialPort = new SerialPort
-            {
-                PortName = portName,
-                WriteTimeout = 1000,
-                ReadTimeout = 1000,
-                BaudRate = 115200,
-                Parity = Parity.None,
-                StopBits = StopBits.One,
-                DataBits = 8,
-                Handshake = Handshake.None
-            };
+            Roomba roomba = new Roomba(portName);
 
-            Roomba roomba = new Roomba(serialPort);
+            roomba.Sensors.ButtonSpot.Subscribe(o => Console.WriteLine("Spot Button Pressed"));
             
             roomba.Song(Song.Define(SongNumber.Song1, Melody.Define((Note.C4, 64), (Note.D4, 32), (Note.E4, 16))));
             

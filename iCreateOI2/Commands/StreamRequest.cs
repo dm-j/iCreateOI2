@@ -13,7 +13,7 @@ namespace iCreateOI2.Commands
             Data = sensors.Select(o => (byte)o).ToImmutableArray();
         }
 
-        public static IDataBytes Packets(params SensorPacket[] sensors) =>
+        public static StreamRequest Packets(params SensorPacket[] sensors) =>
             new StreamRequest(sensors);
     }
 }

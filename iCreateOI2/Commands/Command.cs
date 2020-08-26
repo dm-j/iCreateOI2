@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace iCreateOI2.Commands
 {
-    public enum OpCode
+    internal enum OpCode
     {
         Start = 128,
         Reset = 7,
@@ -18,7 +18,7 @@ namespace iCreateOI2.Commands
         SensorStream = 148
     }
 
-    public class Command : IDataBytes
+    internal class Command : IDataBytes
     {
         public ImmutableArray<byte> Data { get; private set; }
 
@@ -69,17 +69,17 @@ namespace iCreateOI2.Commands
         public static Command SensorStream(params SensorPacket[] packets) =>
             new Command(OpCode.SensorStream, StreamRequest.Packets(packets));
 
-        #region Cached 0-Data commands
+        #region Cached commands
 
-        private static Command _Start { get; } = new Command(OpCode.Start);
-        private static Command _Passive { get; } = new Command(OpCode.Start);
-        private static Command _Halt { get; } = new Command(OpCode.Drive, Commands.Drive.Halt);
-        private static Command _Reset { get; } = new Command(OpCode.Reset);
-        private static Command _Off { get; } = new Command(OpCode.Reset);
-        private static Command _Safe { get; } = new Command(OpCode.Safe);
-        private static Command _Full { get; } = new Command(OpCode.Full);
-        private static Command _SeekDock { get; } = new Command(OpCode.SeekDock);
-        private static Command _Power { get; } = new Command(OpCode.Power);
+        private static readonly Command _Start    = new Command(OpCode.Start);
+        private static readonly Command _Passive  = new Command(OpCode.Start);
+        private static readonly Command _Halt     = new Command(OpCode.Drive, Commands.Drive.Halt);
+        private static readonly Command _Reset    = new Command(OpCode.Reset);
+        private static readonly Command _Off      = new Command(OpCode.Reset);
+        private static readonly Command _Safe     = new Command(OpCode.Safe);
+        private static readonly Command _Full     = new Command(OpCode.Full);
+        private static readonly Command _SeekDock = new Command(OpCode.SeekDock);
+        private static readonly Command _Power    = new Command(OpCode.Power);
 
         #endregion
     }

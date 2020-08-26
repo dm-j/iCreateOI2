@@ -4,22 +4,23 @@ using System.Reactive.Linq;
 using System.Text;
 
 namespace iCreateOI2.Sensors
+
 {
     /// <summary>
     /// Sensor packet data received. If it passes checksum, interpret the data and fire the sensor parser
     /// </summary>
-    public class ReadingComplete : IReadOutput
+    public class ReadingComplete : IReadSensorPacketStreamData
     {
-        private readonly OutputReader output;
+        private readonly SensorStream output;
         private byte[] data;
         private int checksum;
 
-        internal ReadingComplete(OutputReader output)
+        internal ReadingComplete(SensorStream output)
         {
             this.output = output;
         }
 
-        public IReadOutput Read(byte b)
+        public IReadSensorPacketStreamData Output(byte b)
         {
             checksum = Checksum(b);
             if (checksum == 0)

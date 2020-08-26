@@ -1,5 +1,6 @@
 ﻿using iCreateOI2.Commands;
 using iCreateOI2.Communications;
+using iCreateOI2.Sensors;
 using System;
 
 namespace iCreateOI2.Modes
@@ -56,5 +57,24 @@ namespace iCreateOI2.Modes
 
         public override IInteractionMode Halt() =>
             ModeSafe().Halt();
+        
+        public override IInteractionMode Stream()
+        {
+            robot.Send(Command.SensorStream(
+                    SensorPacket.BumpsWheelDrops,
+                    SensorPacket.Buttons,
+                    SensorPacket.LightBumperCenterLeftSignal,
+                    SensorPacket.LightBumperCenterRightSignal,
+                    SensorPacket.LightBumperFrontLeftSignal,
+                    SensorPacket.LightBumperFrontRightSignal,
+                    SensorPacket.LightBumperLeftSignal,
+                    SensorPacket.LightBumperRightSignal,
+                    SensorPacket.OIMode,
+                    SensorPacket.RequestedLeftVelocity,
+                    SensorPacket.RequestedRightVelocity
+                ));
+            return this;
+        }
+
     }
 }

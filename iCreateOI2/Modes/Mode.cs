@@ -11,7 +11,7 @@ namespace iCreateOI2.Modes
         Full
     }
 
-    public interface IInteractionMode
+    internal interface IInteractionMode
     {
         IInteractionMode ModeFull();
         IInteractionMode ModePassive();
@@ -24,6 +24,7 @@ namespace iCreateOI2.Modes
         IInteractionMode Sing(Melody melody);
         IInteractionMode ModeOff();
         IInteractionMode SeekDock();
+        IInteractionMode Stream();
     }
 
     internal abstract class OpenInterfaceMode : IInteractionMode
@@ -46,6 +47,7 @@ namespace iCreateOI2.Modes
         public abstract IInteractionMode Sing(Song song);
         public abstract IInteractionMode Play(SongNumber number);
         public abstract IInteractionMode Sing(Melody melody);
+        public abstract IInteractionMode Stream();
 
         public static IInteractionMode Init(Roomba robot) => 
             new Off(robot);

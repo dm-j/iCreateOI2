@@ -3,19 +3,19 @@
     /// <summary>
     /// The next byte 019 signals the start of a packet
     /// </summary>
-    internal class AwaitingStart : IReadOutput
+    internal class AwaitingStart : IReadSensorPacketStreamData
     {
-        private readonly OutputReader output;
+        private readonly SensorStream output;
         internal const byte START_BYTE = 019;
 
-        internal AwaitingStart(OutputReader output) 
+        internal AwaitingStart(SensorStream output) 
         {
             this.output = output;
         }
 
-        public IReadOutput Read(byte b) =>
+        public IReadSensorPacketStreamData Output(byte b) =>
             b == START_BYTE
-                ? (IReadOutput)output.ReadingLength
+                ? (IReadSensorPacketStreamData)output.ReadingLength
                 : this;
     }
 }

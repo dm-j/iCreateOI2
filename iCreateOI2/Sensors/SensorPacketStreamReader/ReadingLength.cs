@@ -3,15 +3,15 @@
     /// <summary>
     /// Packet has begun, first byte is packet payload length
     /// </summary>
-    internal class ReadingLength : IReadOutput
+    internal class ReadingLength : IReadSensorPacketStreamData
     {
-        private readonly OutputReader output;
-        internal ReadingLength(OutputReader output) 
+        private readonly SensorStream output;
+        internal ReadingLength(SensorStream output) 
         {
             this.output = output;
         }
 
-        public IReadOutput Read(byte b) =>
+        public IReadSensorPacketStreamData Output(byte b) =>
             output.ReadingPayload.SetLength(b);
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
 
 namespace iCreateOI2.Domain
@@ -19,21 +17,7 @@ namespace iCreateOI2.Domain
             return (int)(u >= (1u << 15) ? u - (1u << 16) : u);
         }
 
-        public static IObservable<T[]> Chop<T>(this IObservable<T> values, IObservable<int> control) =>
-            Observable.Create<T[]>(observer =>
-            {
-                List<T> buffer = new List<T>();
-                return values.Zip(control.SelectMany(length => Enumerable.Repeat(length, length)),
-                                  (value, length) => (value, length))
-                             .Subscribe(next =>
-                             {
-                                 buffer.Add(next.value);
-                                 if (buffer.Count == next.length)
-                                 {
-                                     observer.OnNext(buffer.ToArray());
-                                     buffer.Clear();
-                                 }
-                             });
-            });
+        public static IObservable<T> Share<T>(this IObservable<T> values) =>
+            values.Publish().RefCount();
     }
 }

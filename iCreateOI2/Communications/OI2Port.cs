@@ -9,10 +9,22 @@ using System.Text;
 
 namespace iCreateOI2.Communications
 {
-    internal class Communications
+    internal class OI2Port
     {
-        internal Communications(SerialPort port)
+        internal OI2Port(string portName)
         {
+            SerialPort port = new SerialPort
+            {
+                PortName = portName,
+                WriteTimeout = 1000,
+                ReadTimeout = 1000,
+                BaudRate = 115200,
+                Parity = Parity.None,
+                StopBits = StopBits.One,
+                DataBits = 8,
+                Handshake = Handshake.None
+            };
+
             Subject<byte[]> serialPortInput = new Subject<byte[]>();
             Input = serialPortInput.AsObserver();
             port.Open();
@@ -32,13 +44,9 @@ namespace iCreateOI2.Communications
                     reader.ReadBlock(buffer, 0, 16);
                     return Encoding.UTF8.GetBytes(buffer);
                 });
-            
-            // Debug input and output to console
-            // serialPortInput.Subscribe(data => Console.WriteLine(string.Join(' ', data.Select(b => b.ToString("{000}")))));
-            // Output.Subscribe(data => Console.WriteLine(data.ToString("[000]")));
         }
 
-        public readonly IObserver<byte[]> Input;
-        public readonly IObservable<byte> Output;
+        internal readonly IObserver<byte[]> Input;
+        internal readonly IObservable<byte> Output;
     }
 }

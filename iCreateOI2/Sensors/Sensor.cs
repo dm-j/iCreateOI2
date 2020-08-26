@@ -1,97 +1,66 @@
-﻿//using iCreateOI2.Commands;
-//using System;
-//using System.Collections.Immutable;
+﻿using iCreateOI2.Communications;
+using iCreateOI2.Domain;
+using iCreateOI2.Modes;
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
 
-//namespace iCreateOI2.Sensors
-//{
-//    /// <summary>
-//    /// Obsolete, this is being folded into the Sensor parsing state machine
-//    /// </summary>
-//    public class Sensor : IDataBytes
-//    {
-//        internal readonly SensorPacket packet;
-//        public ImmutableArray<byte> Data { get; }
-//        private readonly SensorParser parser;
-//        public int ResponseLength => parser.Length;
+namespace iCreateOI2.Sensors
+{
+    public class Sensors
+    {
+        private readonly SensorStream stream;
 
-//        private Sensor(SensorPacket packet, SensorParser parser)
-//        {
-//            this.packet = packet;
-//            Data = new[] { (byte)packet }.ToImmutableArray();
-//            this.parser = parser;
-//        }
+        internal Sensors(OI2Port port)
+        {
+            stream = new SensorStream(port.Output);
 
-//        internal (SensorPacket packet, int value) Read(byte[] sensorium, ref int currentHeadPosition)
-//        {
-//            var result = (packet, parser.Parse(sensorium[currentHeadPosition .. (currentHeadPosition + parser.Length)]));
-//            currentHeadPosition += parser.Length;
-//            return result;
-//        }
+            Emergency = stream.Parsers[SensorPacket.BumpsWheelDrops].DistinctUntilChanged().Select(value => SingleUnsigned(value) != 0).Where(o => o).Select(_ => Unit.Default).Share();
 
-//        public static Sensor BumpsWheelDrops              { get; } = new Sensor(SensorPacket.BumpsWheelDrops,              SensorParser.SingleUnsigned);
-//        public static Sensor Wall                         { get; } = new Sensor(SensorPacket.Wall,                         SensorParser.SingleUnsigned);
-//        public static Sensor CliffLeft                    { get; } = new Sensor(SensorPacket.CliffLeft,                    SensorParser.SingleUnsigned);
-//        public static Sensor CliffFrontLeft               { get; } = new Sensor(SensorPacket.CliffFrontLeft,               SensorParser.SingleUnsigned);
-//        public static Sensor CliffFrontRight              { get; } = new Sensor(SensorPacket.CliffFrontRight,              SensorParser.SingleUnsigned);
-//        public static Sensor CliffRight                   { get; } = new Sensor(SensorPacket.CliffRight,                   SensorParser.SingleUnsigned);
-//        public static Sensor VirtualWall                  { get; } = new Sensor(SensorPacket.VirtualWall,                  SensorParser.SingleUnsigned);
-//        public static Sensor WheelOvercurrents            { get; } = new Sensor(SensorPacket.WheelOvercurrents,            SensorParser.SingleUnsigned);
-//        public static Sensor DirtDetect                   { get; } = new Sensor(SensorPacket.DirtDetect,                   SensorParser.SingleUnsigned);
-//        public static Sensor IROmni                       { get; } = new Sensor(SensorPacket.IROmni,                       SensorParser.SingleUnsigned);
-//        public static Sensor IRLeft                       { get; } = new Sensor(SensorPacket.IRLeft,                       SensorParser.SingleUnsigned);
-//        public static Sensor IRRight                      { get; } = new Sensor(SensorPacket.IRRight,                      SensorParser.SingleUnsigned);
-//        public static Sensor Buttons                      { get; } = new Sensor(SensorPacket.Buttons,                      SensorParser.SingleUnsigned);
-//        public static Sensor Distance                     { get; } = new Sensor(SensorPacket.Distance,                     SensorParser.HighLowSigned);
-//        public static Sensor Angle                        { get; } = new Sensor(SensorPacket.Angle,                        SensorParser.HighLowSigned);
-//        public static Sensor ChargingState                { get; } = new Sensor(SensorPacket.ChargingState,                SensorParser.SingleUnsigned);
-//        public static Sensor Voltage                      { get; } = new Sensor(SensorPacket.Voltage,                      SensorParser.HighLowUnsigned);
-//        public static Sensor Current                      { get; } = new Sensor(SensorPacket.Current,                      SensorParser.HighLowSigned);
-//        public static Sensor Temperature                  { get; } = new Sensor(SensorPacket.Temperature,                  SensorParser.SingleSigned);
-//        public static Sensor BatteryCharge                { get; } = new Sensor(SensorPacket.BatteryCharge,                SensorParser.HighLowUnsigned);
-//        public static Sensor BatteryCapacity              { get; } = new Sensor(SensorPacket.BatteryCapacity,              SensorParser.HighLowUnsigned);
-//        public static Sensor WallSignal                   { get; } = new Sensor(SensorPacket.WallSignal,                   SensorParser.HighLowUnsigned);
-//        public static Sensor CliffLeftSignal              { get; } = new Sensor(SensorPacket.CliffLeftSignal,              SensorParser.HighLowUnsigned);
-//        public static Sensor CliffFrontLeftSignal         { get; } = new Sensor(SensorPacket.CliffFrontLeftSignal,         SensorParser.HighLowUnsigned);
-//        public static Sensor CliffFrontRightSignal        { get; } = new Sensor(SensorPacket.CliffFrontRightSignal,        SensorParser.HighLowUnsigned);
-//        public static Sensor CliffRightSignal             { get; } = new Sensor(SensorPacket.CliffRightSignal,             SensorParser.HighLowUnsigned);
-//        public static Sensor ChargingSourcesAvailable     { get; } = new Sensor(SensorPacket.ChargingSourcesAvailable,     SensorParser.SingleUnsigned);
-//        public static Sensor OIMode                       { get; } = new Sensor(SensorPacket.OIMode,                       SensorParser.SingleUnsigned);
-//        public static Sensor SongNumber                   { get; } = new Sensor(SensorPacket.SongNumber,                   SensorParser.SingleUnsigned);
-//        public static Sensor SongPlaying                  { get; } = new Sensor(SensorPacket.SongPlaying,                  SensorParser.SingleUnsigned);
-//        public static Sensor StreamPackets                { get; } = new Sensor(SensorPacket.StreamPackets,                SensorParser.SingleUnsigned);
-//        public static Sensor RequestedVelocity            { get; } = new Sensor(SensorPacket.RequestedVelocity,            SensorParser.HighLowSigned);
-//        public static Sensor RequestedRadius              { get; } = new Sensor(SensorPacket.RequestedRadius,              SensorParser.HighLowSigned);
-//        public static Sensor RequestedRightVelocity       { get; } = new Sensor(SensorPacket.RequestedRightVelocity,       SensorParser.HighLowSigned);
-//        public static Sensor RequestedLeftVelocity        { get; } = new Sensor(SensorPacket.RequestedLeftVelocity,        SensorParser.HighLowSigned);
-//        public static Sensor LeftEncoderCounts            { get; } = new Sensor(SensorPacket.LeftEncoderCounts,            SensorParser.HighLowUnsigned);
-//        public static Sensor RightEncoderCounts           { get; } = new Sensor(SensorPacket.RightEncoderCounts,           SensorParser.HighLowSigned);
-//        public static Sensor LightBumper                  { get; } = new Sensor(SensorPacket.LightBumper,                  SensorParser.SingleUnsigned);
-//        public static Sensor LightBumperLeftSignal        { get; } = new Sensor(SensorPacket.LightBumperLeftSignal,        SensorParser.HighLowUnsigned);
-//        public static Sensor LightBumperFrontLeftSignal   { get; } = new Sensor(SensorPacket.LightBumperFrontLeftSignal,   SensorParser.HighLowUnsigned);
-//        public static Sensor LightBumperCenterLeftSignal  { get; } = new Sensor(SensorPacket.LightBumperCenterLeftSignal,  SensorParser.HighLowUnsigned);
-//        public static Sensor LightBumperCenterRightSignal { get; } = new Sensor(SensorPacket.LightBumperCenterRightSignal, SensorParser.HighLowUnsigned);
-//        public static Sensor LightBumperFrontRightSignal  { get; } = new Sensor(SensorPacket.LightBumperFrontRightSignal,  SensorParser.HighLowUnsigned);
-//        public static Sensor LightBumperRightSignal       { get; } = new Sensor(SensorPacket.LightBumperRightSignal,       SensorParser.HighLowUnsigned);
-//        public static Sensor MotorCurrentLeft             { get; } = new Sensor(SensorPacket.MotorCurrentLeft,             SensorParser.HighLowSigned);
-//        public static Sensor MotorCurrentRight            { get; } = new Sensor(SensorPacket.MotorCurrentRight,            SensorParser.HighLowSigned);
-//        public static Sensor MainBrushMotorCurrent        { get; } = new Sensor(SensorPacket.MainBrushMotorCurrent,        SensorParser.HighLowSigned);
-//        public static Sensor Stasis                       { get; } = new Sensor(SensorPacket.Stasis,                       SensorParser.SingleUnsigned);
+            var ButtonsRaw = stream.Parsers[SensorPacket.Buttons].DistinctUntilChanged().Select(SingleUnsigned).Where(o => o > 0).Share();
+            ButtonClean = ButtonsRaw.Select(value => ParseButton(value, Buttons.Clean)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
+            ButtonSpot = ButtonsRaw.Select(value => ParseButton(value, Buttons.Spot)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
+            ButtonDock = ButtonsRaw.Select(value => ParseButton(value, Buttons.Dock)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
+            ButtonMinute = ButtonsRaw.Select(value => ParseButton(value, Buttons.Minute)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
+            ButtonHour = ButtonsRaw.Select(value => ParseButton(value, Buttons.Hour)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
+            ButtonDay = ButtonsRaw.Select(value => ParseButton(value, Buttons.Day)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
+            ButtonSchedule = ButtonsRaw.Select(value => ParseButton(value, Buttons.Schedule)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
+            ButtonClock = ButtonsRaw.Select(value => ParseButton(value, Buttons.Clock)).DistinctUntilChanged().Where(o => o).Select(_ => Unit.Default).Share();
 
-//        private class SensorParser
-//        {
-//            internal readonly Func<byte[], int> Parse;
-//            internal readonly int Length;
+            RealOIMode = stream.Parsers[SensorPacket.OIMode].DistinctUntilChanged().Select(value => (Mode)SingleUnsigned(value)).Share();
 
-//            internal SensorParser(Func<byte[], int> parse, int length)
-//            {
-//                Parse = parse;
-//                Length = length;
-//            }
+            RequestedRightVelocity = stream.Parsers[SensorPacket.RequestedRightVelocity].Select(HighLowSigned).Share();
+            RequestedLeftVelocity = stream.Parsers[SensorPacket.RequestedLeftVelocity].Select(HighLowSigned).Share();
 
-//            internal static SensorParser SingleSigned    { get; } = new SensorParser(data => (sbyte)data[0], 1);
-//            internal static SensorParser SingleUnsigned  { get; } = new SensorParser(data => data[0], 1);
-//            internal static SensorParser HighLowSigned   { get; } = new SensorParser(data => BitConverter.ToInt16(data, 0), 2);
-//            internal static SensorParser HighLowUnsigned { get; } = new SensorParser(data => 256 * data[0] + data[1], 2);
-//        }
-//    }
-//}
+            var ProximityLeft = stream.Parsers[SensorPacket.LightBumperLeftSignal].Scan(0f, SmoothProximity);
+            var ProximityFrontLeft = stream.Parsers[SensorPacket.LightBumperFrontLeftSignal].Scan(0f, SmoothProximity);
+            var ProximityCenterLeft = stream.Parsers[SensorPacket.LightBumperCenterLeftSignal].Scan(0f, SmoothProximity);
+            var ProximityCenterRight = stream.Parsers[SensorPacket.LightBumperCenterRightSignal].Scan(0f, SmoothProximity);
+            var ProximityFrontRight = stream.Parsers[SensorPacket.LightBumperFrontRightSignal].Scan(0f, SmoothProximity);
+            var ProximityRight = stream.Parsers[SensorPacket.LightBumperRightSignal].Scan(0f, SmoothProximity);
+
+            var prox = ProximityLeft.And(ProximityFrontLeft).And(ProximityCenterLeft).And(ProximityCenterRight).And(ProximityFrontRight).And(ProximityRight);
+            Proximity = Observable.When(prox.Then((LL, FL, CL, CR, FR, RR) => new ProximitySensors(LL, FL, CL, CR, FR, RR))).Share();
+        }
+
+        public IObservable<Unit> Emergency { get; private set; }
+        public IObservable<Unit> ButtonClean { get; private set; }
+        public IObservable<Unit> ButtonSpot { get; private set; }
+        public IObservable<Unit> ButtonDock { get; private set; }
+        public IObservable<Unit> ButtonMinute { get; private set; }
+        public IObservable<Unit> ButtonHour { get; private set; }
+        public IObservable<Unit> ButtonDay { get; private set; }
+        public IObservable<Unit> ButtonSchedule { get; private set; }
+        public IObservable<Unit> ButtonClock { get; private set; }
+        internal IObservable<Mode> RealOIMode { get; private set; }
+        public IObservable<int> RequestedRightVelocity { get; private set; }
+        public IObservable<int> RequestedLeftVelocity { get; private set; }
+        public IObservable<ProximitySensors> Proximity { get; private set; }
+
+
+        private readonly Func<byte[], int> SingleUnsigned = data => data[0];
+        private readonly Func<byte[], int> HighLowSigned = data => BitConverter.ToInt16(data, 0);
+        private readonly Func<int, Buttons, bool> ParseButton = (data, button) => (data & (int)button) > 0;
+        private readonly Func<float, byte[], float> SmoothProximity = (acc, next) => (acc * 0.8f) + (((256 * next[0] + next[1]) / 4095f) * (1f - 0.8f));
+    }
+}

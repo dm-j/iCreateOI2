@@ -3,18 +3,18 @@
     /// <summary>
     /// Packet payload has begun, accumulating packet data
     /// </summary>
-    internal class ReadingPayload : IReadOutput
+    internal class ReadingPayload : IReadSensorPacketStreamData
     {
         private int index = 0;
         private byte[] bytes;
-        private readonly OutputReader output;
+        private readonly SensorStream output;
 
-        internal ReadingPayload(OutputReader output) 
+        internal ReadingPayload(SensorStream output) 
         {
             this.output = output;
         }
 
-        public IReadOutput Read(byte b)
+        public IReadSensorPacketStreamData Output(byte b)
         {
             bytes[index] = b;
             if (++index >= bytes.Length)
