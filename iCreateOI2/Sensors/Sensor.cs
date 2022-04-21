@@ -7,7 +7,23 @@ using System.Reactive.Linq;
 
 namespace iCreateOI2.Sensors
 {
-    public class Sensors
+    public interface ISensors
+    {
+        IObservable<Unit> Emergency { get; }
+        IObservable<Unit> ButtonClean { get; }
+        IObservable<Unit> ButtonSpot { get; }
+        IObservable<Unit> ButtonDock { get; }
+        IObservable<Unit> ButtonMinute { get; }
+        IObservable<Unit> ButtonHour { get; }
+        IObservable<Unit> ButtonDay { get; }
+        IObservable<Unit> ButtonSchedule { get; }
+        IObservable<Unit> ButtonClock { get; }
+        IObservable<int> RequestedRightVelocity { get; }
+        IObservable<int> RequestedLeftVelocity { get; }
+        IObservable<ProximitySensors> Proximity { get; }
+    }
+
+    public class Sensors : ISensors
     {
         private readonly SensorStream stream;
 

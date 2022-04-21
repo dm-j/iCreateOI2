@@ -7,26 +7,26 @@ namespace iCreateOI2.Sensors
     /// </summary>
     internal class Aligning : IReadSensorPacketStreamData
     {
-        private static readonly Random random = new Random();
+        private static readonly Random Random = new Random();
 
-        private readonly SensorStream output;
-        private int skip = 1;
+        private readonly SensorStream _output;
+        private int _skip = 1;
 
         internal Aligning(SensorStream output)
         {
-            this.output = output;
+            this._output = output;
         }
 
         internal Aligning Skip()
         {
-            skip = random.Next(1, 3);
+            _skip = Random.Next(1, 3);
             return this;
         }
 
         public IReadSensorPacketStreamData Output(byte b)
         {
-            if (b == AwaitingStart.START_BYTE && --skip <= 0)
-                return output.AwaitingStart;
+            if (b == AwaitingStart.START_BYTE && --_skip <= 0)
+                return _output.AwaitingStart;
 
             return this;
         }
